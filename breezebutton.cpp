@@ -162,7 +162,7 @@ namespace SierraBreeze
     void Button::drawIcon( QPainter *painter ) const
     {
 
-        painter->setRenderHints( QPainter::Antialiasing );
+       painter->setRenderHints( QPainter::Antialiasing );
 
         /*
         scale painter so that its window matches QRect( -1, -1, 20, 20 )
@@ -213,18 +213,25 @@ namespace SierraBreeze
                 {
                   QColor button_color = QColor(242, 80, 86);
                   if (!c->isActive())
-                    button_color = QColor(199, 199, 199);
+                    button_color = QColor(230, 230, 230);
                   painter->setBrush( button_color );
                   painter->setPen( Qt::NoPen );
                   painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
                   painter->setBrush( Qt::NoBrush );
-                  if ( isHovered() )
-                  {
-                    painter->setPen( hint_pen );
+                  painter->setPen(pen);
                     // painter->setPen(pen);
                     // it's a cross
-                    painter->drawLine( QPointF( 6, 6 ), QPointF( 12, 12 ) );
-                    painter->drawLine( QPointF( 6, 12 ), QPointF( 12, 6 ) );
+                    painter->drawLine( QPointF( 5, 5 ), QPointF( 13, 13 ) );
+                    painter->drawLine( 13, 5, 5, 13 );
+                    break;
+                  if ( isHovered() )
+                  {
+                    painter->setPen(pen);
+                    // painter->setPen(pen);
+                    // it's a cross
+                    painter->drawLine( QPointF( 5, 5 ), QPointF( 13, 13 ) );
+                    painter->drawLine( 13, 5, 5, 13 );
+                    break;
                   }
                   painter->setPen( pen );
 
@@ -233,118 +240,91 @@ namespace SierraBreeze
 
                 case DecorationButtonType::Maximize:
                 {
-                  QColor button_color = QColor(19, 209, 61);
-                  if (!c->isActive())
-                    button_color = QColor(199, 199, 199);
+                  if( isChecked() )
+                    {
+                        pen.setJoinStyle( Qt::RoundJoin );
+                        painter->setPen( pen );
 
-                  painter->setBrush( button_color );
-                  painter->setPen( Qt::NoPen );
-                  // painter->drawEllipse( QRectF( 3, 3, 12, 12 ) );
-                  painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
-                  painter->setBrush( Qt::NoBrush );
-                  if ( isHovered() )
-                  {
-                    painter->setPen( hint_pen );
-                    // two triangles
-                    QPainterPath path1, path2;
-                    path1.moveTo(5, 13);
-                    path1.lineTo(11, 13);
-                    path1.lineTo(5, 7);
+                        painter->drawPolygon( QVector<QPointF>{
+                            QPointF( 4, 9 ),
+                            QPointF( 9, 4 ),
+                            QPointF( 14, 9 ),
+                            QPointF( 9, 14 )} );
 
-                    path2.moveTo(13, 5);
-                    path2.lineTo(7, 5);
-                    path2.lineTo(13, 11);
-
-
-                    painter->fillPath(path1, QBrush(hover_hint_color));
-                    painter->fillPath(path2, QBrush(hover_hint_color));
-                  }
-                  painter->setPen( pen );
-                    // if( isChecked() )
-                    // {
-                    //     pen.setJoinStyle( Qt::RoundJoin );
-                    //     painter->setPen( pen );
-
-                    //     painter->drawPolygon( QPolygonF()
-                    //         << QPointF( 4, 9 )
-                    //         << QPointF( 9, 4 )
-                    //         << QPointF( 14, 9 )
-                    //         << QPointF( 9, 14 ) );
-
-                    // } else {
-                    //     painter->drawPolyline( QPolygonF()
-                    //         << QPointF( 4, 11 )
-                    //         << QPointF( 9, 6 )
-                    //         << QPointF( 14, 11 ) );
-                    // }
+                    } else {
+                        painter->drawPolyline( QVector<QPointF>{
+                            QPointF( 4, 11 ),
+                            QPointF( 9, 6 ),
+                            QPointF( 14, 11 )});
+                    }
                     break;
                 }
 
                 case DecorationButtonType::Minimize:
                 {
-                  QColor button_color = QColor(252, 190, 7);
-                  if (!c->isActive())
-                    button_color = QColor(199, 199, 199);
-                  painter->setBrush( button_color );
-                  painter->setPen( Qt::NoPen );
-                  // painter->drawEllipse( QRectF( 3, 3, 12, 12 ) );
-                  painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
-                  painter->setBrush( Qt::NoBrush );
-                  if ( isHovered() )
-                    {
-                      painter->setPen( hint_pen );
-                      // painter->drawLine( QPointF( 6, 9 ), QPointF( 12, 9 ) );
-                      painter->drawLine( QPointF( 5, 9 ), QPointF( 13, 9 ) );
-                    }
-                  painter->setPen( pen );
+                  painter->drawPolyline( QVector<QPointF>{
+                        QPointF( 4, 7 ),
+                        QPointF( 9, 12 ),
+                        QPointF( 14, 7 ) });
                     break;
                 }
 
                 case DecorationButtonType::OnAllDesktops:
                 {
-                  QColor button_color = QColor(125, 209, 200);
-                  if (!c->isActive())
-                    button_color = QColor(199, 199, 199);
-                  painter->setBrush( button_color );
-                  painter->setPen( Qt::NoPen );
-                  painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
-                  if ( isHovered() || isChecked() )
-                  {
-                    painter->setBrush(QBrush(hover_hint_color));
-                    painter->drawEllipse( QRectF( 6, 6, 6, 6 ) );
-                  }
-                  painter->setPen( pen );
-                  painter->setBrush( Qt::NoBrush );
-                  break;
+                    painter->setPen( Qt::NoPen );
+                    painter->setBrush( foregroundColor );
+
+                    if( isChecked())
+                    {
+
+                        // outer ring
+                        painter->drawEllipse( QRectF( 3, 3, 12, 12 ) );
+
+                        // center dot
+                        QColor backgroundColor( this->backgroundColor() );
+                        auto d = qobject_cast<Decoration*>( decoration() );
+                        if( !backgroundColor.isValid() && d ) backgroundColor = d->titleBarColor();
+
+                        if( backgroundColor.isValid() )
+                        {
+                            painter->setBrush( backgroundColor );
+                            painter->drawEllipse( QRectF( 8, 8, 2, 2 ) );
+                        }
+
+                    } else {
+
+                        painter->drawPolygon( QVector<QPointF> {
+                            QPointF( 6.5, 8.5 ),
+                            QPointF( 12, 3 ),
+                            QPointF( 15, 6 ),
+                            QPointF( 9.5, 11.5 )} );
+
+                        painter->setPen( pen );
+                        painter->drawLine( QPointF( 5.5, 7.5 ), QPointF( 10.5, 12.5 ) );
+                        painter->drawLine( QPointF( 12, 6 ), QPointF( 4.5, 13.5 ) );
+                    }
+                    break;
                 }
 
                 case DecorationButtonType::Shade:
                 {
-                  QColor button_color = QColor(135, 206, 249);
-                  if (!c->isActive())
-                    button_color = QColor(199, 199, 199);
-                  painter->setBrush( button_color );
-                  painter->setPen( Qt::NoPen );
-                  painter->setBrush( button_color );
-                  painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
-                  painter->setBrush( Qt::NoBrush );
+
                     if (isChecked())
                     {
-                        painter->setPen( hint_pen );
-                        painter->drawLine( 4, 5, 14, 5 );
-                        painter->drawPolyline( QPolygonF()
-                            << QPointF( 4, 8 )
-                            << QPointF( 9, 13 )
-                            << QPointF( 14, 8 ) );
 
-                    }
-                    else if (isHovered()) {
-                        painter->setPen( hint_pen );
-                        painter->drawLine( 4, 5, 14, 5 );
-                        painter->drawPolyline( QPolygonF()
-                            << QPointF( 4, 13 )
-                            << QPointF( 9, 8 )
-                            << QPointF( 14, 13 ) );
+                        painter->drawLine( QPointF( 4, 5.5 ), QPointF( 14, 5.5 ) ); // painter->drawLine( 4, 5, 14, 5 );
+                        painter->drawPolyline( QVector<QPointF> {
+                            QPointF( 4, 8 ),
+                            QPointF( 9, 13 ),
+                            QPointF( 14, 8 )} );
+
+                    } else {
+
+                        painter->drawLine( QPointF( 4, 5.5 ), QPointF( 14, 5.5 ) ); // painter->drawLine( 4, 5, 14, 5 );
+                        painter->drawPolyline(  QVector<QPointF> {
+                            QPointF( 4, 13 ),
+                            QPointF( 9, 8 ),
+                            QPointF( 14, 13 ) });
                     }
 
                     break;
@@ -353,70 +333,40 @@ namespace SierraBreeze
 
                 case DecorationButtonType::KeepBelow:
                 {
-                  QColor button_color = QColor(255, 137, 241);
-                  if (!c->isActive())
-                    button_color = QColor(199, 199, 199);
-                  painter->setBrush( button_color );
-                  painter->setPen( Qt::NoPen );
-                  painter->setBrush( button_color );
-                  painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
-                  painter->setBrush( Qt::NoBrush );
-                  if (isChecked() || isHovered())
-                  {
-                    painter->setPen( hint_pen );
-                    painter->drawPolyline( QPolygonF()
-                                           << QPointF( 4, 5 )
-                                           << QPointF( 9, 10 )
-                                           << QPointF( 14, 5 ) );
 
-                    painter->drawPolyline( QPolygonF()
-                                           << QPointF( 4, 9 )
-                                           << QPointF( 9, 14 )
-                                           << QPointF( 14, 9 ) );
-                  }
+                    painter->drawPolyline(  QVector<QPointF> {
+                        QPointF( 4, 5 ),
+                        QPointF( 9, 10 ),
+                        QPointF( 14, 5 ) });
 
+                    painter->drawPolyline(  QVector<QPointF> {
+                        QPointF( 4, 9 ),
+                        QPointF( 9, 14 ),
+                        QPointF( 14, 9 ) });
                     break;
 
                 }
 
                 case DecorationButtonType::KeepAbove:
                 {
-                  QColor button_color = QColor(204, 176, 213);
-                  if (!c->isActive())
-                    button_color = QColor(199, 199, 199);
-                  painter->setBrush( button_color );
-                  painter->setPen( Qt::NoPen );
-                  painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
-                  painter->setBrush( Qt::NoBrush );
-                  if ( isHovered() || isChecked())
-                  {
+                    painter->drawPolyline(  QVector<QPointF> {
+                        QPointF( 4, 9 ),
+                        QPointF( 9, 4 ),
+                        QPointF( 14, 9 ) });
 
-                    painter->setPen( hint_pen );
-                    QPainterPath path;
-                    path.moveTo(9, 6);
-                    path.lineTo(5, 12);
-                    path.lineTo(13, 12);
-                    painter->fillPath(path, QBrush(hover_hint_color));
-                  }
-                  painter->setPen( pen );
-                    // painter->drawPolyline( QPolygonF()
-                    //     << QPointF( 4, 9 )
-                    //     << QPointF( 9, 4 )
-                    //     << QPointF( 14, 9 ) );
-
-                    // painter->drawPolyline( QPolygonF()
-                    //     << QPointF( 4, 13 )
-                    //     << QPointF( 9, 8 )
-                    //     << QPointF( 14, 13 ) );
+                    painter->drawPolyline(  QVector<QPointF> {
+                        QPointF( 4, 13 ),
+                        QPointF( 9, 8 ),
+                        QPointF( 14, 13 ) });
                     break;
                 }
 
 
                 case DecorationButtonType::ApplicationMenu:
                 {
-                    painter->drawLine( QPointF( 3.5, 5 ), QPointF( 14.5, 5 ) );
-                    painter->drawLine( QPointF( 3.5, 9 ), QPointF( 14.5, 9 ) );
-                    painter->drawLine( QPointF( 3.5, 13 ), QPointF( 14.5, 13 ) );
+                    painter->drawRect( QRectF( 3.5, 4.5, 11, 1 ) ); // painter->drawLine( QPointF( 3.5, 5 ), QPointF( 14.5, 5 ) );
+                    painter->drawRect( QRectF( 3.5, 8.5, 11, 1 ) ); // painter->drawLine( QPointF( 3.5, 9 ), QPointF( 14.5, 9 ) );
+                    painter->drawRect( QRectF( 3.5, 12.5, 11, 1 ) ); // painter->drawLine( QPointF( 3.5, 13 ), QPointF( 14.5, 13 ) );
                     break;
                 }
 
@@ -428,10 +378,11 @@ namespace SierraBreeze
                     path.cubicTo( QPointF(12.5, 9.5), QPointF( 9, 7.5 ), QPointF( 9, 11.5 ) );
                     painter->drawPath( path );
 
-                    painter->drawPoint( 9, 15 );
+                    painter->drawRect( QRectF( 9, 15, 0.5, 0.5 ) ); // painter->drawPoint( 9, 15 );
 
                     break;
                 }
+
 
                 default: break;
 
