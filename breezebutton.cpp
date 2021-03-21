@@ -191,6 +191,7 @@ namespace SierraBreeze
 
             // setup painter
             QPen pen( foregroundColor );
+            // QPen pen(QColor(250, 250, 250));
             pen.setCapStyle( Qt::RoundCap );
             pen.setJoinStyle( Qt::MiterJoin );
             pen.setWidthF( 1.1*qMax((qreal)1.0, 20/width ) );
@@ -218,6 +219,7 @@ namespace SierraBreeze
                   painter->setPen( Qt::NoPen );
                   painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
                   painter->setBrush( Qt::NoBrush );
+                
                   painter->setPen(pen);
                     // painter->setPen(pen);
                     // it's a cross
@@ -227,6 +229,8 @@ namespace SierraBreeze
                   if ( isHovered() )
                   {
                     painter->setPen(pen);
+                    painter->setBrush(QColor(230, 230, 230));
+
                     // painter->setPen(pen);
                     // it's a cross
                     painter->drawLine( QPointF( 5, 5 ), QPointF( 13, 13 ) );
@@ -245,11 +249,12 @@ namespace SierraBreeze
                         pen.setJoinStyle( Qt::RoundJoin );
                         painter->setPen( pen );
 
-                        painter->drawPolygon( QVector<QPointF>{
-                            QPointF( 4, 9 ),
-                            QPointF( 9, 4 ),
-                            QPointF( 14, 9 ),
-                            QPointF( 9, 14 )} );
+                        // painter->drawPolygon( QVector<QPointF>{
+                        //     QPointF( 4, 9 ),
+                        //     QPointF( 9, 4 ),
+                        //     QPointF( 14, 9 ),
+                        //     QPointF( 9, 14 )} );
+                        painter->drawEllipse( QRectF( 4, 4, 10, 10 ) );
 
                     } else {
                         painter->drawPolyline( QVector<QPointF>{
@@ -393,43 +398,50 @@ namespace SierraBreeze
     }
 
     //__________________________________________________________________
-    QColor Button::foregroundColor( void ) const
+  QColor Button::foregroundColor() const
     {
         auto d = qobject_cast<Decoration*>( decoration() );
+        QColor titleBarColor ( d->titleBarColor() );
+
         if( !d ) {
 
             return QColor();
 
         } else if( isPressed() ) {
 
-            return d->titleBarColor();
+            return titleBarColor;
 
-        } else if( type() == DecorationButtonType::Close && d->internalSettings()->outlineCloseButton() ) {
+        } else if( ( type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade ) && isChecked() ) {
 
-            return d->titleBarColor();
+            return titleBarColor;
 
-        } else if( ( type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove ) && isChecked() ) {
+        } else if( m_animation->state() == QAbstractAnimation::Running ) {
+            if(type() == DecorationButtonType::Close){
+                return KColorUtils::mix(titleBarColor, QColor(250, 250, 250), m_opacity);
+            }
 
-            return d->titleBarColor();
-
-        } else if( m_animation->state() == QPropertyAnimation::Running ) {
-
-            return KColorUtils::mix( d->fontColor(), d->titleBarColor(), m_opacity );
+            return KColorUtils::mix(  QColor(250, 250,250), titleBarColor, m_opacity );
 
         } else if( isHovered() ) {
 
-            return d->titleBarColor();
+            if((type() == DecorationButtonType::Close) && (d->client().data()->isActive())){
+                return QColor(250,250,250);
+            }
+            return titleBarColor;
 
         } else {
 
-            return d->fontColor();
+            if(type() == DecorationButtonType::Close){
+                return titleBarColor;
+            }
+            return QColor(250, 250, 250);
 
         }
 
     }
 
     //__________________________________________________________________
-    QColor Button::backgroundColor( void ) const
+    QColor Button::backgroundColor() const
     {
         auto d = qobject_cast<Decoration*>( decoration() );
         if( !d ) {
@@ -438,36 +450,27 @@ namespace SierraBreeze
 
         }
 
-        auto c = d->client().data();
+        auto c = d->client().toStrongRef().data();
         if( isPressed() ) {
 
             if( type() == DecorationButtonType::Close ) return c->color( ColorGroup::Warning, ColorRole::Foreground );
-            else return KColorUtils::mix( d->titleBarColor(), d->fontColor(), 0.3 );
+            else return KColorUtils::mix(  QColor(250, 250,250), d->titleBarColor(), 0.3 );
 
-        } else if( ( type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove ) && isChecked() ) {
+        } else if( ( type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade ) && isChecked() ) {
 
-            return d->fontColor();
+            return QColor(250, 250, 250);
 
-        } else if( m_animation->state() == QPropertyAnimation::Running ) {
+        } else if( m_animation->state() == QAbstractAnimation::Running ) {
 
             if( type() == DecorationButtonType::Close )
             {
-                if( d->internalSettings()->outlineCloseButton() )
-                {
-
-                    return KColorUtils::mix( d->fontColor(), c->color( ColorGroup::Warning, ColorRole::Foreground ).lighter(), m_opacity );
-
-                } else {
-
-                    QColor color( c->color( ColorGroup::Warning, ColorRole::Foreground ).lighter() );
-                    color.setAlpha( color.alpha()*m_opacity );
-                    return color;
-
-                }
+                QColor color( c->color( ColorGroup::Warning, ColorRole::Foreground ).lighter() );
+                color.setAlpha( color.alpha()*m_opacity );
+                return color;
 
             } else {
 
-                QColor color( d->fontColor() );
+                QColor color( QColor(250,250,250) );
                 color.setAlpha( color.alpha()*m_opacity );
                 return color;
 
@@ -476,11 +479,7 @@ namespace SierraBreeze
         } else if( isHovered() ) {
 
             if( type() == DecorationButtonType::Close ) return c->color( ColorGroup::Warning, ColorRole::Foreground ).lighter();
-            else return d->fontColor();
-
-        } else if( type() == DecorationButtonType::Close && d->internalSettings()->outlineCloseButton() ) {
-
-            return d->fontColor();
+            else return QColor(250, 250,250);
 
         } else {
 
