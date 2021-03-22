@@ -212,9 +212,17 @@ namespace SierraBreeze
 
                 case DecorationButtonType::Close:
                 {
+                  auto d = qobject_cast<Decoration*>( decoration() );
+                  QColor titleBarColor ( d->titleBarColor() );
                   QColor button_color = QColor(242, 80, 86);
-                  if (!c->isActive())
-                    button_color = QColor(230, 230, 230);
+                  if (!c->isActive()){
+                     if(titleBarColor.name(QColor::HexRgb) < "#777777"){
+                     button_color = QColor(250,250,250);
+                    }
+                    else{
+                        button_color = QColor(41,43,50);
+                    } 
+                  }
                   painter->setBrush( button_color );
                   painter->setPen( Qt::NoPen );
                   painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
@@ -229,7 +237,7 @@ namespace SierraBreeze
                   if ( isHovered() )
                   {
                     painter->setPen(pen);
-                    painter->setBrush(QColor(230, 230, 230));
+                    painter->setBrush(QColor(250, 250, 250));
 
                     // painter->setPen(pen);
                     // it's a cross
@@ -402,7 +410,7 @@ namespace SierraBreeze
     {
         auto d = qobject_cast<Decoration*>( decoration() );
         QColor titleBarColor ( d->titleBarColor() );
-
+        QColor fontColor (d->fontColor());
         if( !d ) {
 
             return QColor();
@@ -417,15 +425,28 @@ namespace SierraBreeze
 
         } else if( m_animation->state() == QAbstractAnimation::Running ) {
             if(type() == DecorationButtonType::Close){
-                return KColorUtils::mix(titleBarColor, QColor(250, 250, 250), m_opacity);
+                if(titleBarColor.name(QColor::HexRgb) < "#777777")
+                return KColorUtils::mix(titleBarColor, QColor(41,43,50), m_opacity);
+                else
+                return KColorUtils::mix(titleBarColor, QColor(250,250,250), m_opacity);
             }
+                if(titleBarColor.name(QColor::HexRgb) < "#777777"){
+                 return KColorUtils::mix(QColor(250,250,250), titleBarColor, m_opacity);
+                }
+                else{
+                return KColorUtils::mix(QColor(41,43,50), titleBarColor, m_opacity);
 
-            return KColorUtils::mix(  QColor(250, 250,250), titleBarColor, m_opacity );
-
+                }
+            
         } else if( isHovered() ) {
 
-            if((type() == DecorationButtonType::Close) && (d->client().data()->isActive())){
+            if((type() == DecorationButtonType::Close) ){
+                if(titleBarColor.name(QColor::HexRgb) < "#777777"){
                 return QColor(250,250,250);
+                }
+                else{
+                    return QColor(41,43,50);
+                }
             }
             return titleBarColor;
 
@@ -434,7 +455,12 @@ namespace SierraBreeze
             if(type() == DecorationButtonType::Close){
                 return titleBarColor;
             }
-            return QColor(250, 250, 250);
+            if(titleBarColor.name(QColor::HexRgb) < "#777777"){
+                return QColor(250,250,250);
+            }
+            else{
+                return QColor(41,43,50);
+            }
 
         }
 
@@ -443,7 +469,10 @@ namespace SierraBreeze
     //__________________________________________________________________
     QColor Button::backgroundColor() const
     {
+
         auto d = qobject_cast<Decoration*>( decoration() );
+                QColor titleBarColor ( d->titleBarColor() );
+
         if( !d ) {
 
             return QColor();
@@ -454,11 +483,16 @@ namespace SierraBreeze
         if( isPressed() ) {
 
             if( type() == DecorationButtonType::Close ) return c->color( ColorGroup::Warning, ColorRole::Foreground );
-            else return KColorUtils::mix(  QColor(250, 250,250), d->titleBarColor(), 0.3 );
+            else return KColorUtils::mix(  QColor(250, 250, 250), d->titleBarColor(), 0.3 );
 
         } else if( ( type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade ) && isChecked() ) {
 
-            return QColor(250, 250, 250);
+            if(titleBarColor.name(QColor::HexRgb) < "#777777"){
+                return QColor(250,250,250);
+            }
+            else{
+                return QColor(41,43,50);
+            }
 
         } else if( m_animation->state() == QAbstractAnimation::Running ) {
 
@@ -470,16 +504,30 @@ namespace SierraBreeze
 
             } else {
 
-                QColor color( QColor(250,250,250) );
-                color.setAlpha( color.alpha()*m_opacity );
+                if(titleBarColor.name(QColor::HexRgb) < "#777777"){
+                    QColor color (QColor(250,250,250));
+                    color.setAlpha( color.alpha()*m_opacity );
                 return color;
+
+                }
+                else{
+                    QColor color( QColor(41,43,50));
+                    color.setAlpha( color.alpha()*m_opacity );
+                return color;
+
+                }
 
             }
 
         } else if( isHovered() ) {
 
             if( type() == DecorationButtonType::Close ) return c->color( ColorGroup::Warning, ColorRole::Foreground ).lighter();
-            else return QColor(250, 250,250);
+            if(titleBarColor.name(QColor::HexRgb) < "#777777"){
+                return QColor(250,250,250);
+            }
+            else{
+                return QColor(41,43,50);
+            }
 
         } else {
 
