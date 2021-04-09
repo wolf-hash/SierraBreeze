@@ -28,7 +28,7 @@ sudo dnf install "cmake(Qt5Core)" "cmake(Qt5Gui)" "cmake(Qt5DBus)" "cmake(Qt5X11
 
 In order to install the theme and add it to your decorations do the following:
 ``` shell
-git clone https://github.com/ishovkun/SierraBreeze
+git clone https://github.com/wolf-hash/SierraBreeze
 cd SierraBreeze
 mkdir build
 cd build
