@@ -1,7 +1,6 @@
 # SierraBreeze
 
-Sierra Breeze is a fork of Breeze Window decoration that aims to mimic the
-OSX Sierra titlebar buttons.
+Sierra Breeze is a fork of Breeze Window decoration.
 ![Screenshot](Screenshot.png)
 
 ## Build
