@@ -4,35 +4,6 @@ Sierra Breeze is a fork of Breeze Window decoration that aims to mimic the
 OSX Sierra titlebar buttons.
 ![Screenshot](Screenshot.png)
 
-## Install
-
-### Debian/Ubuntu
-
-Debian/Ubuntu users can install by using the PPA maintained by Thomas Pietrowski:
-
-``` shell
-sudo add-apt-repository ppa:thopiekar/sierrabreeze
-sudo apt update
-sudo apt install sierrabreeze
-```
-
-### Arch Linux
-
-SierraBreeze can also be installed from the [AUR](https://aur.archlinux.org/packages/sierrabreeze-kwin-decoration-git/) using
-``` shell
-yaourt sierrabreeze-kwin-decoration-git
-```
-
-### OpenSUSE
-
-SierraBreeze can also be installed with zypper
-``` shell
-zypper addrepo https://download.opensuse.org/repositories/home:trmdi/openSUSE_Tumbleweed/home:trmdi.repo
-zypper refresh
-zypper install sierra-breeze
-```
-or using the binary package https://software.opensuse.org//download.html?project=home%3Atrmdi&package=sierra-breeze.
-
 ## Build
 There are some dependencies you'll need to build from source. Some people
 suggested using the following commands:
